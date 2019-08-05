@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:sync="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+             xmlns:local="clr-namespace:CustomSelection"
+             x:Class="CustomSelection.MainPage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:SelectionBoolToImageConverter x:Key="BoolToImageConverter"/>
+            <local:GroupingSelectionConverter x:Key="GroupingSelectionConverter"/>
+            <local:SelectionModeToVisbileConverter  x:Key="SelectionModeToVisbileConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Behaviors>
+        <local:Behavior/>
+    </ContentPage.Behaviors>
+    <Grid Margin="0">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="50" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+    <Grid x:Name="headerGrid" BackgroundColor="#FFEEEEF2" HeightRequest="45">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+      <Image Source="{Binding SelectionCancel}" x:Name="selectionCancelImage" Grid.Column="0"
+             HeightRequest="25" IsVisible="{Binding IsVisible}" WidthRequest="30" Margin="10,0,15,0"
+             HorizontalOptions="Start" VerticalOptions="Center"/>
+      <Label LineBreakMode="NoWrap"
+             Margin="10,0,0,0" Text="{Binding TitleInfo}" FontAttributes="Bold"
+             FontSize="16" TextColor="Black" HorizontalOptions="Start" VerticalOptions="Center"/>
+      <Image Source="{Binding SelectionEdit}" x:Name="selectionEditImage" Grid.Column="1"
+             HeightRequest="25" WidthRequest="30" Margin="0,0,10,0"
+             HorizontalOptions="End" VerticalOptions="Center"/>
+    </Grid>
+    <sync:SfListView x:Name="listView"
+                     Grid.Row="1"
+                     SelectionGesture="Tap"
+                     SelectionMode="Single" 
+                     SelectionBackgroundColor="#E4E4E4"
+                     IsStickyHeader="True" ItemSize="70" >
+            
+            <sync:SfListView.GroupHeaderTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <ViewCell.View>
+                            <Grid BackgroundColor="#d3d3d3">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Label Text="{Binding Key}" Grid.Column="1" VerticalTextAlignment="Center"/>
+                                <Image  Grid.Column="2" HeightRequest="20" WidthRequest="30" x:Name="selectionGroupHeaderImage" IsVisible="{Binding SelectionMode, Source={x:Reference listView}}" 
+                                        HorizontalOptions="Center" VerticalOptions="Center" Margin="0,0,15,0"
+                                       Source="{Binding ., Converter={StaticResource GroupingSelectionConverter}, ConverterParameter={x:Reference listView}}">
+                                    <Image.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Path=BindingContext.GroupHeaderImageCommand, Source={x:Reference listView}}" 
+                                                              CommandParameter="{x:Reference selectionGroupHeaderImage}"/>
+                                    </Image.GestureRecognizers>
+                                </Image>
+                            </Grid>
+                        </ViewCell.View>
+                    </ViewCell>
+                </DataTemplate>
+            </sync:SfListView.GroupHeaderTemplate>
+      <sync:SfListView.ItemTemplate>
+        <DataTemplate x:Name="ItemTemplate" x:Key="ItemTemplate">
+          <Grid x:Name="grid" RowSpacing="0" ColumnSpacing="0">
+            <Grid.RowDefinitions>
+              <RowDefinition Height="*" />
+              <RowDefinition Height="1" />
+            </Grid.RowDefinitions>
+            <Grid RowSpacing="0" ColumnSpacing="0">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+              </Grid.ColumnDefinitions>
+
+              <Image Source="{Binding SongThumbnail}"
+                     HeightRequest="35"
+                     WidthRequest="35"
+                     VerticalOptions="Center"
+                     HorizontalOptions="Center"/>
+
+              <Grid Grid.Column="1"
+                    RowSpacing="1"
+                    Padding="15,0,0,0"
+                    VerticalOptions="Center">
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="*" />
+                  <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Label LineBreakMode="NoWrap"
+                       TextColor="#474747"
+                       Text="{Binding SongTitle}" FontSize="18" />
+                <Grid RowSpacing="0"
+                      ColumnSpacing="0"
+                      Grid.Row="1">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                  </Grid.ColumnDefinitions>
+
+                  <Label TextColor="#474747" LineBreakMode="NoWrap"
+                         Text="{Binding SongAuther}" FontSize="12" />
+                  <Label TextColor="#474747" Margin="0,0,10,0"
+                         Grid.Column="1" LineBreakMode="NoWrap" HorizontalTextAlignment="End"
+                         Text="{Binding SongSize}" FontSize="12" />
+                </Grid>
+              </Grid>
+
+              <Image Grid.Column="2" x:Name="selectionImage" Margin="10,0,20,0"
+                     HeightRequest="30" WidthRequest="20" VerticalOptions="Center" HorizontalOptions="Center"
+                     IsVisible="{Binding SelectionMode, Source={x:Reference listView}, Converter={StaticResource SelectionModeToVisbileConverter}}"
+                     Source="{Binding Path=IsSelected, Converter={StaticResource BoolToImageConverter}}">
+              </Image>
+                
+            </Grid>
+            <Frame Grid.Row="1" OutlineColor="#E4E4E4" HasShadow="True" HeightRequest="1"/>
+          </Grid>
+        </DataTemplate>
+      </sync:SfListView.ItemTemplate>
+    </sync:SfListView>
+  </Grid>
+</ContentPage>
